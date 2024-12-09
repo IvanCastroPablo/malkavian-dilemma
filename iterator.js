@@ -4,8 +4,6 @@ const {
 
 const {
     printingPlayersPool,
-    manageStrategies,
-    mainPlayersInitializing,
     executingMethods,
     reorderNonActiveRegistry
 } = require('./functions.js')
@@ -16,6 +14,8 @@ const {
 
 // función para manejar la eliminación de jugadores cuando hay cinco jugando. Muy abstracta!
 function handleEliminationFiveplayers(player) {
+    // genera el cross-table player para sustituir a quien muera
+    global.crossTable = new NonActivePlayer({name: "Cross-Table player", pool: 0}) 
     if (player === prey) {
         actingPlayer.pool += 6;
         actingPlayer.victoryPoints += 1;
@@ -160,15 +160,15 @@ function prank() {
 }
 
 async function roundsOfPlay() {
-    try {
-        const answer = await askQuestion("How many rounds do you want to play? ")
-        if (typeof answer === "number") {
+    let validInput = false;
+    while (!validInput) {
+        const answer = await askQuestion("How many rounds do you want to play?\n");
+        if (typeof answer === "number" && !isNaN(answer)) {
             const rounds = parseInt(answer);
-            manageStrategies();
             for (let i = 0; i < rounds; i++) {
                 console.log("\nRound", i + 1, "\n");
                 prank();
-                if (i == rounds) {console.log("\nNext Malkavian Prank\n\n");}
+                if (i == rounds) { console.log("\nNext Malkavian Prank\n\n"); }
                 printingPlayersPool();
                 if (NonActivePlayer.nonActiveRegistry.length == 0) {
                     console.log("No more players left.");
@@ -176,15 +176,15 @@ async function roundsOfPlay() {
                 }
             }
             console.log("\nEnd of test");
-        }   
-    } catch(e) {
-        console.log(e.message)
+            validInput = true;
+        } else {
+            console.log("Please, provide a valid number of rounds.");
+        }
     }
 }
 
-async function probar() {
-    await mainPlayersInitializing()
-    await roundsOfPlay()
-}
 
-probar()
+module.exports = {
+    roundsOfPlay,
+    prank
+}

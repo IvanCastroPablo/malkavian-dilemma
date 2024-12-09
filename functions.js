@@ -7,12 +7,8 @@ const {
     askQuestion
 } = require('./utils.js')
 
-
-// crear un objeto jugador no activo para reemplazar a los que pierdan, y sacarlo del registry
-function createReplacer() {
-    global.crossTable = new NonActivePlayer({name: "Cross-Table player", pool: 0})
-    NonActivePlayer.nonActiveRegistry.pop()
-}
+const fs = require('fs');
+const path = require('path');
 
 // Función estándar para instanciar a todos los jugadores y a 15 de pool
 function instancingAllPlayersRegular() {
@@ -21,41 +17,34 @@ function instancingAllPlayersRegular() {
     global.grandprey = new NonActivePlayer({name: "Grandprey"});
     global.grandpredator = new NonActivePlayer({name: "Grandpredator"});
     global.predator = new NonActivePlayer({name: "Predator"});
-    createReplacer()
 }
 
 // función para instanciar a los jugadores de forma personalizada (num de jugadores)
 async function instancingAllPlayersPersonalised() {
-    try {
-        let numberOfPlayers = null;
-        while (![2, 3, 4, 5].includes(numberOfPlayers)) {
-            const answer = await askQuestion(`Between 2 and 5, how many players would you like to be at the table? `);
-            numberOfPlayers = parseInt(answer);
-            if (![2, 3, 4, 5].includes(numberOfPlayers)) {
-                console.log("Please, choose a number of players between 2 and 5!");
-            }
+    let numberOfPlayers = null;
+    while (![2, 3, 4, 5].includes(numberOfPlayers)) {
+        const answer = await askQuestion(`Between 2 and 5, how many players would you like to be at the table? `);
+        numberOfPlayers = parseInt(answer);
+        if (![2, 3, 4, 5].includes(numberOfPlayers)) {
+            console.log("Please, choose a number of players between 2 and 5!");
         }
+    }
 
-        if (numberOfPlayers === 2) {
-            global.actingPlayer = new ActivePlayer({name: "acting player"});
-            global.prey = new NonActivePlayer({name: "opponent"});   
-        }
-        else if (numberOfPlayers === 3) {
-            global.actingPlayer = new ActivePlayer({name: "acting player"});
-            global.prey = new NonActivePlayer({name: "prey"});
-            global.predator = new NonActivePlayer({name: "predator"});
-            createReplacer()
-        } else if (numberOfPlayers === 4) {
-            global.actingPlayer = new ActivePlayer({name: "acting player"});
-            global.prey = new NonActivePlayer({name: "prey"});
-            global.crossTable = new NonActivePlayer({name: "cross-table player"});
-            global.predator = new NonActivePlayer({name: "predator"});
-            createReplacer()
-        } else if (numberOfPlayers === 5) {
-            instancingAllPlayersRegular()
-        }
-    } catch (e) {
-        console.log(e.message);
+    if (numberOfPlayers === 2) {
+        global.actingPlayer = new ActivePlayer({name: "acting player"});
+        global.prey = new NonActivePlayer({name: "opponent"});   
+    }
+    else if (numberOfPlayers === 3) {
+        global.actingPlayer = new ActivePlayer({name: "acting player"});
+        global.prey = new NonActivePlayer({name: "prey"});
+        global.predator = new NonActivePlayer({name: "predator"});
+    } else if (numberOfPlayers === 4) {
+        global.actingPlayer = new ActivePlayer({name: "acting player"});
+        global.prey = new NonActivePlayer({name: "prey"});
+        global.crossTable = new NonActivePlayer({name: "cross-table player"});
+        global.predator = new NonActivePlayer({name: "predator"});
+    } else if (numberOfPlayers === 5) {
+        instancingAllPlayersRegular()
     }
 }
 
@@ -66,33 +55,33 @@ async function manageStrategies() {
 }
 
 // función para personalizar el pool de todos los jugadores
-async function personaliseAllPlayersPool(){
+async function personaliseAllPlayersPool() {
     // parte para jugador activo
-    try {
+    let validInput = false;
+    while (!validInput) {
         const answer = await askQuestion(`What is the starting amount of pool for the acting player? `);
-        if (typeof answer === "number") {
+        if (typeof answer === "number" && !isNaN(answer)) {
             const startingPool = parseInt(answer);
             actingPlayer.pool = startingPool;
+            validInput = true;
         } else {
             console.log(`Please, provide a numeric value for the acting player's starting pool.`);
         }
-    } catch (e) {
-        console.log(e)
     }
 
     // parte para jugadores no activos
-    try {
-        for (const player of NonActivePlayer.nonActiveRegistry) {
+    for (const player of NonActivePlayer.nonActiveRegistry) {
+        let validInput = false;
+        while (!validInput) {
             const answer = await askQuestion(`What is the starting amount of pool for ${player.name}? `);
-            if (typeof answer === "number") {
+            if (typeof answer === "number" && !isNaN(answer)) {
                 const startingPool = parseInt(answer);
                 player.pool = startingPool;
+                validInput = true;
             } else {
                 console.log(`Please, provide a numeric value for ${player.name}'s starting pool.`);
             }
-        } 
-    } catch (e) {
-        console.log(e)
+        }
     }
 }
 
@@ -145,6 +134,79 @@ function reorderNonActiveRegistry() {
     }
 }
 
+// Función para instanciar jugadores desde los archivos .json
+function instancingPlayersFromFiles() {
+    const playersData = [
+        { file: 'actingplayer.json', class: ActivePlayer },
+        { file: 'prey.json', class: NonActivePlayer },
+        { file: 'grandprey.json', class: NonActivePlayer },
+        { file: 'grandpredator.json', class: NonActivePlayer },
+        { file: 'predator.json', class: NonActivePlayer },
+        { file: 'cross-table.json', class: NonActivePlayer }
+    ];
+
+    playersData.forEach(({ file, class: playerClass }) => {
+        const filePath = path.join(__dirname, 'savedfiles', file);
+
+        if (fs.existsSync(filePath)) {
+            const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+            if (playerClass === ActivePlayer) {
+                global.actingPlayer = new ActivePlayer(data);
+            } else if (playerClass === NonActivePlayer) {
+                new NonActivePlayer(data);
+            }
+        } else {
+            console.log(`File ${file} not found.`);
+        }
+    });
+}
+
+// Función para guardar a los jugadores si el usuario lo desea
+async function savePlayersToFile() {
+    let answer = null;
+    while (answer === null) {
+        answer = await askQuestion('Would you like to save the state of the game?\n1) Yes\n2) No\n', [1, 2]);
+    }
+
+    if (answer === 1) {
+        const actingPlayerData = {
+            name: actingPlayer.name,
+            pool: actingPlayer.pool,
+            previousMod: actingPlayer.previousMod,
+            chosenStrategy: actingPlayer.chosenStrategy,
+            victoryPoints: actingPlayer.victoryPoints,
+            guess: actingPlayer.guess,
+            previousGuess: actingPlayer.previousGuess
+        };
+        const actingPlayerFilePath = path.join(__dirname, 'savedfiles', 'actingplayer.json');
+        fs.writeFileSync(actingPlayerFilePath, JSON.stringify(actingPlayerData, null, 2), 'utf8');
+        console.log(`Saved ${actingPlayer.name} to actingplayer.json`);
+
+        // Guardar las instancias de NonActivePlayer en el nonActiveRegistry
+        NonActivePlayer.nonActiveRegistry.forEach(player => {
+            const filePath = path.join(__dirname, 'savedfiles', `${player.name.toLowerCase()}.json`);
+            const playerData = {
+                name: player.name,
+                pool: player.pool,
+                previousMod: player.previousMod,
+                chosenStrategy: player.chosenStrategy,
+                victoryPoints: player.victoryPoints,
+                choice: player.choice,
+                previousChoice: player.previousChoice
+            };
+
+            fs.writeFileSync(filePath, JSON.stringify(playerData, null, 2), 'utf8');
+            console.log(`Saved ${player.name} to ${player.name.toLowerCase()}.json`);
+        });
+        console.log("Goodbye.")
+    } 
+    else if (answer === 2) {
+        console.log('Goodbye.');
+    }
+}
+
+
+
 module.exports = {
     instancingAllPlayersRegular,
     instancingAllPlayersPersonalised,
@@ -153,10 +215,7 @@ module.exports = {
     mainPlayersInitializing,
     executingMethods,
     printingPlayersPool,
-    reorderNonActiveRegistry
+    reorderNonActiveRegistry,
+    instancingPlayersFromFiles,
+    savePlayersToFile
 }
-
-
-
-
-

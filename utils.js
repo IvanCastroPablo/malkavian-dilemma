@@ -14,15 +14,17 @@ function askQuestion(query, validOptions = []) {
     
         rl.question(query, (answer) => {
             rl.close();
-            if (validOptions.length > 0 && !validOptions.includes(parseInt(answer))) {
-                console.log(`Invalid option!`)
-                resolve(null)
+            const parsedAnswer = parseInt(answer);
+            if (isNaN(parsedAnswer) || (validOptions.length > 0 && !validOptions.includes(parsedAnswer))) {
+                console.log(`Invalid option!`);
+                resolve(null);  // Return null for invalid input
             } else {
-            resolve(parseInt(answer))
+                resolve(parsedAnswer);  // Return the valid number
             }
         });
     });
 }
+
 
 module.exports = {
     random, 

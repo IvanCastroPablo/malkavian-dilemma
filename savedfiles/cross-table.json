@@ -1,0 +1,9 @@
+{
+    "name": "Cross-Table player",
+    "pool": 15,
+    "previusMod": 0,
+    "chosestrategy": null,
+    "victoryPoints": 0,
+    "choice": null,
+    "previousChoice": null
+}
