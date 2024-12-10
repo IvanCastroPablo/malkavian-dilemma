@@ -22,55 +22,59 @@ class ActivePlayer {
         this.chosenStrategy = chosenStrategy;
     }
 
-    optimist(){
+    optimist() {
         this.guess = (3 + random(2));
-    };
+    }
 
-    delusional(){
+    delusional() {
         this.guess = 4;
-    };
+    }
 
     pessimist() {
         this.guess = (1 + random(2));
-    };
+    }
 
     aleatory() {
         this.guess = (1 + random(4));
-    };
+    }
 
     // Diccionario de nombres para estrategias activas
     static activeStrategyNames = {
         optimist: 'optimist',
         delusional: 'delusional',
-        pessimist: 'pessimist', 
+        pessimist: 'pessimist',
         aleatory: 'aleatory'
     };
 
-    // función para escoger la estrategia del jugador activo
+    // Mapa de estrategias por índice
+    static activeStrategyMap = {
+        1: 'optimist',
+        2: 'delusional',
+        3: 'pessimist',
+        4: 'aleatory'
+    };
+
+    // Función para seleccionar una estrategia del jugador activo
     async selectActiveStrategy() {
         while (true) {
             const answer = await askQuestion("Select one option among the following strategies for acting player:\n1) Optimist\n2) Delusional\n3) Pessimist\n4) Aleatory\n ", [1, 2, 3, 4]);
             
             if (answer !== null) {
-                const strategies = [this.optimist, this.delusional, this.pessimist, this.aleatory];
+                // el nombre de la estrategia desde el mapa
+                const strategyName = ActivePlayer.activeStrategyMap[answer];
+                this.chosenStrategy = this[strategyName]; 
 
-                this.chosenStrategy = strategies[answer - 1];
-
-                const strategyName = ActivePlayer.activeStrategyNames[this.chosenStrategy.name];
-                console.log(`The selected strategy for the active player is: ${strategyName}.`);
+                console.log(`The selected strategy for the active player is: ${this.chosenStrategy.name}.`);
                 return;
             }
         }
     }
+    async selectRandomActiveStrategy() {
+        const randomIndex = 1 + random(4)
+        const strategyName = ActivePlayer.activeStrategyMap[randomIndex];
+        this.chosenStrategy = this[strategyName];  
 
-    // Método para seleccionar una estrategia de forma aleatoria
-    selectRandomActiveStrategy() {
-            const strategies = [this.optimist, this.delusional, this.pessimist, this.aleatory];
-            const randomIndex = random(strategies.length);
-            this.chosenStrategy = strategies[randomIndex];
-
-            const strategyName = ActivePlayer.activeStrategyNames[this.chosenStrategy.name];
-            console.log(`The randomly selected strategy for the active player is: ${strategyName}.`);
+        console.log(`The randomly selected strategy for the active player is: ${strategyName}.`);
     }
 }
 
@@ -104,7 +108,7 @@ class NonActivePlayer {
         } else {
             this.choice = 2;
         }
-    };
+    }
 
     aggressive() {
         if (this.pool <= 15) {
@@ -112,7 +116,7 @@ class NonActivePlayer {
         } else {
             this.choice = 4;
         }
-    };
+    }
 
     clever() {
         if (this.pool == 1) {
@@ -127,7 +131,6 @@ class NonActivePlayer {
     randomChoice() {
         this.choice = (1 + random(4));
     }
-    
 
     // Diccionario de nombres para estrategias no activas
     static nonActiveStrategyNames = {
@@ -137,47 +140,57 @@ class NonActivePlayer {
         randomChoice: "Random Choice"
     }
 
-    // función para seleccionar la estrategia de un jugador no activo dado
+    // Mapa de estrategias por índice
+    static nonActiveStrategyMap = {
+        1: 'conservative',
+        2: 'aggressive',
+        3: 'clever',
+        4: 'randomChoice'
+    }
+
+    // Función para seleccionar la estrategia de un jugador no activo dado
     async selectNonActiveStrategy() {
         while (true) {
-                let answer = await askQuestion(
-                    `Select one option among the following strategies for ${this.name}:\n1) Conservative\n2) Aggressive\n3) Clever\n4) Random Choice\n`, [1, 2, 3, 4]);
+            let answer = await askQuestion(
+                `Select one option among the following strategies for ${this.name}:\n1) Conservative\n2) Aggressive\n3) Clever\n4) Random Choice\n`, [1, 2, 3, 4]);
 
-                if (answer !== null) {
-                    const strategies = [this.conservative, this.aggressive, this.clever, this.randomChoice];
+            if (answer !== null) {
+                const strategyName = NonActivePlayer.nonActiveStrategyMap[answer];
+                this.chosenStrategy = this[strategyName];  // Asignamos la función de la estrategia correspondiente
 
-                    // Arreglo para bindear el método al objeto. No sé por qué, pero he de hacerlo así.
-                    const strategyIndex = answer - 1;
-                    this.chosenStrategy = strategies[strategyIndex];
-
-                    const strategyName = NonActivePlayer.nonActiveStrategyNames[this.chosenStrategy.name];
-                    console.log(`The selected strategy for ${this.name} is: ${strategyName}.`);
-                    return;
-                }
+                console.log(`The selected strategy for ${this.name} is: ${NonActivePlayer.nonActiveStrategyNames[strategyName]}.`);
+                return;
+            }
         }
     }
 
     // Método para seleccionar una estrategia de forma aleatoria para un jugador no activo
-    selectRandomNonActiveStrategy() {
-            const strategies = [this.conservative, this.aggressive, this.clever, this.randomChoice];
-            const randomIndex = random(strategies.length); // Usa la función random importada
-            this.chosenStrategy = strategies[randomIndex];
+    async selectRandomNonActiveStrategy() {
+        const randomIndex = (1 + random(4)); // Seleccionar un índice aleatorio
+        const strategyName = NonActivePlayer.nonActiveStrategyMap[randomIndex];
+        this.chosenStrategy = this[strategyName];  // Asignamos la función de la estrategia correspondiente
 
-            const strategyName = NonActivePlayer.nonActiveStrategyNames[this.chosenStrategy.name];
-            console.log(`The randomly selected strategy for ${this.name} is: ${strategyName}.`);
+        console.log(`The randomly selected strategy for ${this.name} is: ${NonActivePlayer.nonActiveStrategyNames[strategyName]}.`);
     }
 
-    // bucle para seleccionar la estrategia para cada jugador no activo
-    static async selectStrategyAllNonActive() {
+    // Bucle para seleccionar la estrategia para cada jugador no activo
+    static async selectStrategyAllNonActive(arg = "no-random") {
         for (const player of NonActivePlayer.nonActiveRegistry) {
             while (player.chosenStrategy === null) {
-                await player.selectNonActiveStrategy();
+                if (arg === "random") {
+                    await player.selectRandomNonActiveStrategy()
+                } else {
+                    await player.selectNonActiveStrategy();
+                }
+                
             }
         }
     }
 }
 
+
 module.exports = {
     ActivePlayer,
     NonActivePlayer,
 }
+

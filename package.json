@@ -1,0 +1,13 @@
+{
+  "name": "malkavianjs",
+  "version": "2.0.0",
+  "description": "A JavaScript solver framework for multiplayer scenarios",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Testing has been done manually using the console for now. Formal tests to be added soon.\" && exit 0"
+  },
+  "keywords": ["game", "multiplayer", "solver", "framework", "gametheory"],
+  "author": "Ivan Castro",
+  "license": "CC BY-NC-ND 4.0",
+  "type": "commonjs"
+}

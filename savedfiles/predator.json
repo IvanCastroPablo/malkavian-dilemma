@@ -1,8 +1,9 @@
 {
-  "name": "Predator",
-  "pool": 21,
+  "name": "predator",
+  "pool": 34,
   "previousMod": null,
   "victoryPoints": 0,
   "choice": 3,
-  "previousChoice": null
+  "previousChoice": null,
+  "chosenStrategy": "randomChoice"
 }

@@ -5,37 +5,39 @@ const {
 const {
     printingPlayersPool,
     executingMethods,
-    reorderNonActiveRegistry
+    reorderNonActiveRegistry,
+    capitalize
 } = require('./functions.js')
 
 const {
-    askQuestion
+    askQuestion,
+    random
 } = require('./utils')
 
 // función para manejar la eliminación de jugadores cuando hay cinco jugando. Muy abstracta!
 function handleEliminationFiveplayers(player) {
     // genera el cross-table player para sustituir a quien muera
-    global.crossTable = new NonActivePlayer({name: "Cross-Table player", pool: 0}) 
+    global.crosstable = new NonActivePlayer({name: "Cross-Table player", pool: 0}) 
     if (player === prey) {
         actingPlayer.pool += 6;
         actingPlayer.victoryPoints += 1;
         console.log("The Prey has been ousted! Your former Grandprey is now your Prey and your Grandpredator is now the Cross-Table player.\n");
-        playerSubstitutionFivePlayers(grandprey, prey, grandpredator, crossTable);
+        playerSubstitutionFivePlayers(grandprey, prey, grandpredator, crosstable);
     }  else if (player === grandprey) {
         prey.pool += 6;
         prey.victoryPoints += 1;
         console.log("The GradPrey has been ousted! Your former GrandPredator is now the Cross-Table player.\n");
-        playerSubstitutionFivePlayers(grandpredator, crossTable);
+        playerSubstitutionFivePlayers(grandpredator, crosstable);
     } else if (player === grandpredator) {
         grandprey.pool += 6;
         grandprey.victoryPoints += 1;
         console.log("The GrandPredator has been ousted! Your Grandprey is now the Cross-Table player.\n")
-        playerSubstitutionFivePlayers(grandprey, crossTable);
+        playerSubstitutionFivePlayers(grandprey, crosstable);
     } else if (player === predator) {
         grandpredator.pool += 6;
         grandpredator.victoryPoints += 1;
         console.log("The Predator has been ousted! Your Grandprey is now the Cross-Table player, and your Grandpredator is your new predator.\n")
-        playerSubstitutionFivePlayers(grandpredator, predator, grandprey, crossTable);
+        playerSubstitutionFivePlayers(grandpredator, predator, grandprey, crosstable);
     }
 }
 
@@ -52,7 +54,7 @@ async function playerSubstitutionFivePlayers(displaced1, replacer1, displaced2 =
 
     NonActivePlayer.nonActiveRegistry = NonActivePlayer.nonActiveRegistry.filter(player => player !== grandprey);
     NonActivePlayer.nonActiveRegistry = NonActivePlayer.nonActiveRegistry.filter(player => player !== grandpredator);
-    NonActivePlayer.nonActiveRegistry.push(crossTable);
+    NonActivePlayer.nonActiveRegistry.push(crosstable);
     reorderNonActiveRegistry();
 }
 
@@ -62,17 +64,17 @@ function handleEliminationFourPlayers(player) {
         actingPlayer.pool += 6;
         actingPlayer.victoryPoints += 1;
         console.log("The Prey has been ousted! The former Cross-Table player is now your Prey.\n");
-        playerSubstitutionFourPlayers(crossTable, prey)
-    } else if (player === crossTable) {
+        playerSubstitutionFourPlayers(crosstable, prey)
+    } else if (player === crosstable) {
         prey.pool += 6;
         prey.victoryPoints += 1;
         console.log("The Cross-Table player has been ousted!\n")
         playerSubstitutionFourPlayers()
     } else if (player === predator) {
-        crossTable.pool += 6;
-        crossTable.victoryPoints += 1;
+        crosstable.pool += 6;
+        crosstable.victoryPoints += 1;
         console.log("The Predator has been ousted! The Cross-Table player is your new Predator.\n");
-        playerSubstitutionFourPlayers(crossTable, predator)
+        playerSubstitutionFourPlayers(crosstable, predator)
     }
 }
 
@@ -82,7 +84,7 @@ async function playerSubstitutionFourPlayers(displaced1= null, replacer1= null){
         const { name, ...rest } = displaced1;
         Object.assign(replacer1, rest);
     }
-    NonActivePlayer.nonActiveRegistry = NonActivePlayer.nonActiveRegistry.filter(player => player !== crossTable);
+    NonActivePlayer.nonActiveRegistry = NonActivePlayer.nonActiveRegistry.filter(player => player !== crosstable);
     reorderNonActiveRegistry();
 }
 
@@ -118,9 +120,8 @@ function prank() {
         executingMethods();
         reorderNonActiveRegistry();
         const otherPlayer = NonActivePlayer.nonActiveRegistry[index];
-        console.log(`${otherPlayer.name} has chosen ${otherPlayer.choice}`);
+        console.log(`${capitalize(otherPlayer.name)} has chosen ${otherPlayer.choice}`);
         console.log(`Acting player guess ${actingPlayer.guess}\n`);
-
         // Lógica principal
         if (actingPlayer.guess === otherPlayer.choice) {
             console.log("Right Guess!");
@@ -146,43 +147,51 @@ function prank() {
                     NonActivePlayer.nonActiveRegistry = NonActivePlayer.nonActiveRegistry.filter(player => player !== prey);
                 }
             } else {
-                console.log(`${otherPlayer.name} pool is now ${otherPlayer.pool}`);
+                console.log(`${capitalize(otherPlayer.name)}'s pool is now ${otherPlayer.pool}`);
                 console.log(`Acting player pool is now ${actingPlayer.pool}\n`);
                 index ++;
             }
         } else {
             console.log("Wrong guess!");
             otherPlayer.pool += otherPlayer.choice;
-            console.log(`${otherPlayer.name} pool is now ${otherPlayer.pool}\n`);
+            console.log(`${capitalize(otherPlayer.name)}'s pool is now ${otherPlayer.pool}\n`);
             index ++;
             }
     }
 }
 
-async function roundsOfPlay() {
+async function roundsOfPlay(arg = "no-random") {
     let validInput = false;
     while (!validInput) {
-        const answer = await askQuestion("How many rounds do you want to play?\n");
-        if (typeof answer === "number" && !isNaN(answer)) {
+        let answer;
+        if (arg === "random") {
+            answer = (1 + (random(10))); 
+            console.log(`Randomly selected ${answer} rounds to play.`);
+        } else {
+            answer = await askQuestion("How many rounds do you want to play?\n");
+        }
+        
+        if (!isNaN(answer)) {
             const rounds = parseInt(answer);
             for (let i = 0; i < rounds; i++) {
                 console.log("\nRound", i + 1, "\n");
                 prank();
-                if (i == rounds) { console.log("\nNext Malkavian Prank\n\n"); }
+                if (i == rounds) { 
+                    console.log("\nNext Malkavian Prank\n\n"); 
+                }
                 printingPlayersPool();
-                if (NonActivePlayer.nonActiveRegistry.length == 0) {
+                if (NonActivePlayer.nonActiveRegistry.length === 0) {
                     console.log("No more players left.");
                     break;
                 }
             }
-            console.log("\nEnd of test");
+            console.log("\nEnd of test\n\n");
             validInput = true;
         } else {
             console.log("Please, provide a valid number of rounds.");
         }
     }
 }
-
 
 module.exports = {
     roundsOfPlay,

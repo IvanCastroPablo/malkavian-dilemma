@@ -5,39 +5,42 @@ const {
     instancingAllPlayersRegular,
     manageStrategies,
     instancingPlayersFromFiles,
-    savePlayersToFile
+    savePlayersToFile,
+    aleatoryPlayersInitializing
 } = require("./functions.js")
 
 const {
-    askQuestion
+    askQuestion,
 } = require('./utils')
 
 
 async function modeOfGame() {
     let validInput = false;
     while (!validInput) {
-        const answer = await askQuestion("Do you prefer a standard mode of game, or a personalised one?\n1) Standard\n2) Personalised\n3) Saved Game\n");
-        if (typeof answer === "number" && !isNaN(answer)) {
+        const answer = await askQuestion("Do you prefer a standard mode of game, a personalised, a total random one, or to load a saved game?\n1) Standard\n2) Personalised\n3) Random\n4) Saved Game\n");
+        if (!isNaN(answer)) {
             validInput = true;
             const option = parseInt(answer)
             if (answer === 1){
                 instancingAllPlayersRegular()
                 await manageStrategies()
                 await roundsOfPlay()
-                await savePlayersToFile()
             } else if (answer === 2) {
                 await mainPlayersInitializing()
                 await roundsOfPlay()
-                await savePlayersToFile()
             } else if (answer === 3) {
+                await aleatoryPlayersInitializing()
+                await roundsOfPlay("random")
+            } else if (answer === 4) {
                 instancingPlayersFromFiles()
                 await roundsOfPlay()
-                await savePlayersToFile()
             }
+            await savePlayersToFile()
         } else {
-            console.log("Please, choose between 1, 2 and 3 with your keypad.")
+            console.log("Please, choose between 1, 2, 3 and 4 with your keypad.")
         }
     }
 }
 
 modeOfGame()
+
