@@ -1,66 +1,94 @@
-```markdown
 # A Malkavian Dilemma
 
 ---
 
-*__Malkavian Prank__*
+<p align="center">
+  <img src="https://vdb.im/images/cards/set/jyhad/malkavianprank.jpg?v=2024-11-26" alt="Malkavian Prank Card" style="max-width:100%; height:auto;">
+</p>
 
-*Master.*
+<p align="center">
+<em><strong>Malkavian Prank</strong></em>
+</p>
+<p align="center">
+<em>Master.</em>
+</p>
+<p align="center">
+All other Methuselahs hold between 1 and 4 blood in their hands.<br>
+You guess how much is in each Methuselah's hand individually.<br>
+For each one you guess correctly, you gain that much pool from his or her blood pool.<br>
+If you guess incorrectly, he or she gains that much pool from the blood bank.
+</p>
 
-*All other Methuselahs hold between 1 and 4 blood in their hands.*
-*You guess how much is in each Methuselah's hand individually.*
-*For each one you guess correctly, you gain that much pool from his or her blood pool.*
-*If you guess incorrectly, he or she gains that much pool from the blood bank.*
+---
+## Contexts and Goals...
 
+<p align="justify">
+This project is inspired by the work of Robert Axelrod and his analysis of the iterated prisoner's dilemma, as presented in his book <em>The Evolution of Cooperation</em>. The central idea is to model strategic decisions around the card <em>Malkavian Prank</em>, a mechanic from the game <em>Vampire: The Eternal Struggle</em> that involves guessing how many counters each opponent has in their hand. Depending on the outcome, the player can gain or lose resources (<em>pool</em>).  
+</p>
 
-## Contextos y objetivos...
+<p align="justify">
+The main target of this program is to simulate multiple iterations of this mechanic to optimize the player’s decisions, creating different strategies for both the player and the opponents. Through this approach, the goal is to explore optimal decision-making dynamics within a game theory mindset.
+</p>
 
-Este proyecto está inspirado en el trabajo de Robert Axelrod y su análisis del dilema iterado del prisionero, expuesto en su libro *The Evolution of Cooperation*. La idea central es modelar las decisiones estratégicas en torno a la carta *Malkavian Prank*, una mecánica del juego *Vampire: The Eternal Struggle* que implica acertar cuántos contadores tiene cada oponente en su mano. Dependiendo del resultado, el jugador puede ganar o perder recursos (*pool*).  
-
-El objetivo principal de este programa es simular múltiples iteraciones de este juego para optimizar las decisiones del jugador, creando diferentes estrategias tanto para el jugador como para los oponentes. A través de este enfoque, se busca explorar las dinámicas óptimas de decisión dentro de un entorno competitivo.
+<p align="justify">
+It is worth highlighting, in these times, the minimal intervention of artificial intelligence, used mainly for documentation. I must have written at least 95% of this code myself!
+</p>
 
 ---
 
-## Algunos tecnicismos
+## Technical Details
 
-### 1. **Estructura del Proyecto**  
-El proyecto está desarrollado enteramente en **Node.js**, dividido en varios archivos JavaScript que encapsulan diferentes aspectos de la lógica:
+### 1. **Project Structure**  
 
-- **`main.js`**: Punto de entrada que inicializa el flujo del programa, maneja los estados globales y orquesta las interacciones entre los componentes.
-- **`functions.js`** y **`utils.js`**: Conjuntos de funciones utilitarias para operaciones repetitivas o especializadas, como validaciones, procesamiento de datos y manejo de estructuras de datos.
-- **`classes.js`**: Define las clases necesarias para modelar los jugadores (*Methuselahs*), sus comportamientos y los elementos del juego.
-- **`iterator.js`**: Implementa iteradores personalizados que permiten manejar grandes volúmenes de datos o simular turnos de manera eficiente y controlada.
-- **`utils.js`**: Archivo auxiliar para la entrada de usuario y generación de números aleatorios.
+<p align="justify">
+The project is entirely developed in <strong>Node.js</strong>, divided into several JavaScript files that encapsulate different aspects of the logic:
+</p>
 
-### 2. **Lógica del Juego**  
-El programa crea cuatro objetos que representan a los rivales (*Methuselahs*) y uno para el jugador principal. Las reglas de la carta se implementan mediante simulaciones iterativas que:
-- Definen diferentes estrategias de decisión para cada jugador.
-- Calculan las ganancias o pérdidas de *pool* en función de las decisiones tomadas.
-- Ajustan los comportamientos de los rivales según el historial de interacciones, simulando un entorno dinámico y competitivo.
+- **`main.js`**: Entry point that initializes the program flow, manages global states, and orchestrates interactions between components.
+- **`functions.js`** and **`utils.js`**: Sets of utility functions for repetitive or specialized operations, such as validations, data processing, and handling data structures.
+- **`classes.js`**: Defines the necessary classes to model the players (*Methuselahs*), their behaviors, and the game elements.
+- **`iterator.js`**: Implements custom iterators to handle data volumes and simulate turns efficiently and in a controlled manner.
 
-### 3. **Uso de Tecnologías Node.js**  
-- **Módulos de Node.js**: Se emplea el sistema de módulos para dividir el código en partes manejables y reutilizables.
-- **Eventos**: La asincronía se maneja mediante eventos y callbacks, garantizando que las simulaciones fluyan de manera ordenada.
-- **Streams e Iteradores**: Para manejar múltiples simulaciones de forma eficiente y sin saturar la memoria.
-- **File System (`fs`)**: Algunas partes del programa permiten guardar estados o configuraciones de la simulación en archivos locales. q
-- **Path**: Fundamental para el guardado y gestión de los archivos de salvado.
+### 2. **Game Logic**  
+<p align="justify">
+The program creates four objects representing the opponents (*Methuselahs*) and one for the main player. The card's rules are implemented through iterative simulations that:
+</p>
+<ul>
+<li>Define different decision strategies for each player.</li>
+<li>Calculate <em>pool</em> gains or losses based on the decisions made.</li>
+<li>Adjust the opponents' behaviors according to the interaction history, simulating a dynamic and competitive environment.</li>
+</ul>
 
----
+### 3. **Node.js Technologies Usage**  
+<p align="justify">
+- <strong>Node.js Modules</strong>: The module system is used to divide the code into manageable and reusable parts.<br>
+- <strong>Events</strong>: Asynchrony is handled through events and callbacks, ensuring that simulations flow in an orderly manner.<br>
+- <strong>Streams and Iterators</strong>: To handle multiple simulations efficiently without overloading memory.<br>
+- <strong>File System (`fs`) and Path</strong>: Essential for saving and managing saved files.<br>
 
-## Próximos Pasos
-
-### **Retos Superados:**
-- Modelar reglas abstractas de juego y convertirlas en código funcional.
-- Gestionar el flujo asincrónico de múltiples simulaciones de manera eficiente.
-- Crear un sistema flexible que permita implementar nuevas estrategias fácilmente.
-- Conseguir guardar un estado de la ejecución para su uso posterior.
-
-### **Próximos Pasos:**
-- **Implementación Web:** Migrar el proyecto a una interfaz gráfica en formato web. Para ello, se planea utilizar tecnologías como **Express.js** para el backend y un framework como **React.js** para la interfaz de usuario.
-- **Ampliación de Modalidades de Juego:** Añadir más estrategias para los jugadores y otros modos de simulación, permitiendo estudiar variaciones más complejas y realistas, así como permitir al usuario acceder a descripciones e información de forma dinámica.
+</p>
 
 ---
 
-## Conclusión
+## Achievements and Next Steps
 
-Este proyecto ha sido un desafío significativo, requiriendo un entendimiento profundo de la lógica asincrónica, la programación orientada a objetos y la manipulación de estructuras complejas. Aunque aún es una versión preliminar, representa una base sólida para explorar las exigencias de la programación con javascript.
+### **Overcomed Challenges:**
+- Modeling abstract game rules and converting them into functional code.
+- Managing asynchronous flow of multiple simulations efficiently.
+- Creating a flexible system that allows new strategies to be implemented easily.
+- Successfully saving a simulation state for later use.
+
+### **Next Steps:**
+<p align="justify">
+- <strong>Web Implementation:</strong> Migrating the project to a graphical web interface. Technologies like <strong>Express.js</strong> for the backend and a framework like <strong>React.js</strong> for the user interface are planned.<br>
+- <strong>Expanding Game Modes:</strong> Adding more strategies for players and other simulation modes, allowing the study of more complex and realistic variations, as well as enabling users to access descriptions and information dynamically.
+</p>
+
+---
+
+## Conclusion
+
+<p align="justify">
+This project has been a significant challenge, requiring a deep understanding of asynchronous logic, object-oriented programming, and the manipulation of complex structures. Although it is still a preliminary version, it represents a solid foundation for exploring the demands of programming with JavaScript.
+</p>
+
