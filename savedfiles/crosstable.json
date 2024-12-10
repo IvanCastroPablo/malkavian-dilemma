@@ -1,9 +1,0 @@
-{
-  "name": "crosstable",
-  "pool": 7,
-  "previousMod": null,
-  "victoryPoints": 0,
-  "choice": 1,
-  "previousChoice": null,
-  "chosenStrategy": "clever"
-}

@@ -1,9 +1,9 @@
 {
-  "name": "predator",
-  "pool": 34,
+  "name": "Predator",
+  "pool": 16,
   "previousMod": null,
   "victoryPoints": 0,
-  "choice": 3,
+  "choice": 1,
   "previousChoice": null,
-  "chosenStrategy": "randomChoice"
+  "chosenStrategy": "conservative"
 }

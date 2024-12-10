@@ -33,7 +33,13 @@ async function modeOfGame() {
                 await roundsOfPlay("random")
             } else if (answer === 4) {
                 instancingPlayersFromFiles()
-                await roundsOfPlay()
+                if (typeof actingPlayer === "undefined") {
+                    console.log("No save files detected.\nExiting the program.")
+                    return;
+                } else {
+                    await roundsOfPlay()
+                }
+                
             }
             await savePlayersToFile()
         } else {
