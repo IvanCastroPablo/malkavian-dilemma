@@ -29,8 +29,8 @@ async function modeOfGame() {
                 "\nDo you prefer a standard mode of game, a personalised, a total random one, or to load a saved game?\n1) Standard\n2) Personalised\n3) Random\n4) Saved Game\n5) Exit\n"
             );
             if (!isNaN(answer)) {
-                const option = parseInt(answer); // Convertir a número
-                validInput = true; // Asumimos que la entrada es válida
+                const option = parseInt(answer); 
+                validInput = true; 
                 switch (option) {
                     case 1:
                         instancingAllPlayersRegular();
@@ -60,7 +60,7 @@ async function modeOfGame() {
                         break;
                     default:
                         console.log("Please, choose a valid option between 1 and 5.");
-                        validInput = false; // Volver a preguntar
+                        validInput = false; 
                 }
                 if (option >= 1 && option <= 4) {
                     await savePlayersToFile();
