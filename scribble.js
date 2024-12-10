@@ -1,4 +1,4 @@
-// Test file. It will be done with jest. Coming soon.
+// Scribble file. Testing will be done with jest. Coming soon.
 
 /* 
 
@@ -8,9 +8,15 @@ Web implementation.
 Testing,
 Reorganise some functions in iterator.js into functions.js for clarity sake. IDK
 
+Hacer que haya más de un save file folder. :)
+
+Ampliar sobre la complejidad de la teoría de juegos y el por qué de tu interés en desarrollar este programa.
+
+
+
 
 */
-
+/*
 const { modeOfGame } = require("./main.js")
 
 const {
@@ -42,3 +48,4 @@ const {
     roundsOfPlay,
     prank
 } = require("./iterator.js")
+*/

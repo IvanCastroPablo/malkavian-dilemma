@@ -262,11 +262,7 @@ async function savePlayersToFile() {
             console.log(`Saved ${capitalize(player.name)} to a savefile succesfully.`);
 
         });
-        console.log("\nGoodbye.")
     } 
-    else if (answer === 2) {
-        console.log('Goodbye.');
-    }
 }
 
 

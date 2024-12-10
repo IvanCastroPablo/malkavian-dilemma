@@ -27,8 +27,10 @@ This project is inspired by the work of Robert Axelrod and his analysis of the i
 </p>
 
 <p align="justify">
-The main target of this program is to simulate multiple iterations of this mechanic to optimize the player’s decisions, creating different strategies for both the player and the opponents. Through this approach, the goal is to explore optimal decision-making dynamics within a game theory mindset.
+The main target of this program is to simulate multiple iterations of this mechanic to optimize the player’s decisions, creating different strategies for both the acting player and the opponents. Through this approach, the goal is to explore optimal decision-making dynamics within a game theory mindset.
 </p>
+
+<p align="justify"> What drives me about this project is the complexity of game theory itself—a discipline that merges strategy, psychology, and mathematics to analise how individuals and groups make decisions in real life scenarios. Like in Axelrod's experiments, where strategies like "tit-for-tat" emerged as unexpectedly robust, I wanted to create a space to see how similar principles would play out in this gaming context. There’s something captivating about watching cooperation and competition interact, and this program is my attempt to bring that to life. </p> 
 
 <p align="justify">
 It is worth highlighting, in these times, the minimal intervention of artificial intelligence, used mainly for documentation. I must have written at least 95% of this code myself!
@@ -92,3 +94,11 @@ The program creates four objects representing the opponents (*Methuselahs*) and 
 This project has been a significant challenge, requiring a deep understanding of asynchronous logic, object-oriented programming, and the manipulation of complex structures. Although it is still a preliminary version, it represents a solid foundation for exploring the demands of programming with JavaScript.
 </p>
 
+## Usage
+
+<p align="justify">
+To run the project, simply open a terminal and navigate to the directory where the `main.js` file is located. Then, execute the following command:
+</p>
+
+```bash
+node main.js
