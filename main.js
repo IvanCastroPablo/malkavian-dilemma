@@ -50,3 +50,6 @@ async function modeOfGame() {
 
 modeOfGame()
 
+module.exports = {
+    modeOfGame
+}
