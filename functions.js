@@ -37,7 +37,7 @@ async function instancingAllPlayersPersonalised(arg = "no-random") {
             }
         }
     } else if (arg === "random") {
-        numberOfPlayers = (1 + random(5))
+        numberOfPlayers = (2 + random(5)) // A minimum of 2 players, of course
         console.log(`${numberOfPlayers} players will be playing at the game.`)
     }
 
@@ -65,9 +65,9 @@ async function manageStrategies() {
     await NonActivePlayer.selectStrategyAllNonActive()
 }
 
-function manageStrategiesRandom() {
-    actingPlayer.selectRandomActiveStrategy()
-    NonActivePlayer.selectStrategyAllNonActive("random")
+async function manageStrategiesRandom() {
+    await actingPlayer.selectRandomActiveStrategy()
+    await NonActivePlayer.selectStrategyAllNonActive("random")
 }
 // función para personalizar el pool de todos los jugadores
 async function personaliseAllPlayersPool(arg = "no-random") {
@@ -124,7 +124,7 @@ async function mainPlayersInitializing() {
 async function aleatoryPlayersInitializing() {
     await instancingAllPlayersPersonalised("random")
     await personaliseAllPlayersPool("random")
-    manageStrategiesRandom()
+    await manageStrategiesRandom()
     await printingPlayersPool()
 }
 

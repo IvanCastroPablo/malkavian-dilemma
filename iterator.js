@@ -165,7 +165,7 @@ async function roundsOfPlay(arg = "no-random") {
     while (!validInput) {
         let answer;
         if (arg === "random") {
-            answer = (1 + (random(10))); 
+            answer = (1 + (random(5))); 
             console.log(`Randomly selected ${answer} rounds to play.`);
         } else {
             answer = await askQuestion("How many rounds do you want to play?\n");
