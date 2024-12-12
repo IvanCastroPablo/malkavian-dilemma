@@ -1,9 +1,9 @@
 {
   "name": "Grandpredator",
-  "pool": 16,
-  "previousMod": null,
+  "pool": 18,
+  "previousMod": 2,
   "victoryPoints": 0,
   "choice": 2,
   "previousChoice": null,
-  "chosenStrategy": "conservative"
+  "chosenStrategy": "clever"
 }

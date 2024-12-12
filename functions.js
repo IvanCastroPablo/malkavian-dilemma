@@ -265,6 +265,18 @@ async function savePlayersToFile() {
     } 
 }
 
+function eraseInstances() {
+    const possibleInstances = ["actingPlayer", "prey", "grandprey", "grandpredator", "predator", "crossplayer"];
+
+    for (const i of possibleInstances){
+        if (i in globalThis) {
+            globalThis[i] = null;
+        }
+    }
+
+    NonActivePlayer.nonActiveRegistry = [];
+}
+
 
 module.exports = {
     instancingAllPlayersRegular,
@@ -278,6 +290,7 @@ module.exports = {
     instancingPlayersFromFiles,
     savePlayersToFile,
     capitalize,
-    aleatoryPlayersInitializing
+    aleatoryPlayersInitializing,
+    eraseInstances
 }
 

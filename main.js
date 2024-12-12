@@ -6,7 +6,8 @@ const {
     manageStrategies,
     instancingPlayersFromFiles,
     savePlayersToFile,
-    aleatoryPlayersInitializing
+    aleatoryPlayersInitializing,
+    eraseInstances
 } = require("./functions.js")
 
 const {
@@ -15,6 +16,7 @@ const {
 
 
 async function modeOfGame() {
+    eraseInstances()
     console.log(`
           ╔══════════════════════════════════════════════════════════╗
           ║         Pray thee: enter the Malkavian Dilemma,          ║
