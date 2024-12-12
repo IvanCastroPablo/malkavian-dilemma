@@ -20,11 +20,13 @@ function handleEliminationFiveplayers(player) {
     global.crosstable = new NonActivePlayer({name: "Cross-Table player", pool: 0}) 
     if (player === prey) {
         actingPlayer.pool += 6;
+        actingPlayer.previousMod += 6;
         actingPlayer.victoryPoints += 1;
         console.log("The Prey has been ousted! Your former Grandprey is now your Prey and your Grandpredator is now the Cross-Table player.\n");
         playerSubstitutionFivePlayers(grandprey, prey, grandpredator, crosstable);
     }  else if (player === grandprey) {
         prey.pool += 6;
+        prey.previousMod += 6;
         prey.victoryPoints += 1;
         console.log("The GradPrey has been ousted! Your former GrandPredator is now the Cross-Table player.\n");
         playerSubstitutionFivePlayers(grandpredator, crosstable);
@@ -62,11 +64,13 @@ async function playerSubstitutionFivePlayers(displaced1, replacer1, displaced2 =
 function handleEliminationFourPlayers(player) {
     if (player === prey) {
         actingPlayer.pool += 6;
+        actingPlayer.previousMod += 6;
         actingPlayer.victoryPoints += 1;
         console.log("The Prey has been ousted! The former Cross-Table player is now your Prey.\n");
         playerSubstitutionFourPlayers(crosstable, prey)
     } else if (player === crosstable) {
         prey.pool += 6;
+        prey.previousMod += 6;
         prey.victoryPoints += 1;
         console.log("The Cross-Table player has been ousted!\n")
         playerSubstitutionFourPlayers()
@@ -92,11 +96,13 @@ async function playerSubstitutionFourPlayers(displaced1= null, replacer1= null){
 function handleEliminationThreePlayers(player) {
     if(player === prey) {
         actingPlayer.pool += 6;
+        actingPlayer.previousMod += 6;
         actingPlayer.victoryPoints += 1;
         console.log("The Prey has been ousted! Your Predator will be called Prey.\n");
         playerSubstitutionThreePlayers(predator)
     } else if (player === predator) {
         prey.pool += 6;
+        prey.previousMod += 6;
         prey.victoryPoints += 1;
         console.log("The Predator has been ousted!\n");
         playerSubstitutionThreePlayers(prey)
@@ -128,12 +134,16 @@ function prank() {
             if (otherPlayer.pool > otherPlayer.choice) {
                 actingPlayer.pool += otherPlayer.choice;
                 otherPlayer.pool -= otherPlayer.choice;
+                actingPlayer.previousMod = otherPlayer.choice;
+                otherPlayer.previousMod = otherPlayer.choice;
+                console.log(`${capitalize(otherPlayer.name)}'s pool is now ${otherPlayer.pool}`);
+                console.log(`Acting player pool is now ${actingPlayer.pool}\n`);
+                index ++;
             } else {
                 actingPlayer.pool += otherPlayer.pool;
+                actingPlayer.previousMod = otherPlayer.pool;
                 otherPlayer.pool = 0;
-            }
-            // Verificar si un jugador ha sido eliminado
-            if (otherPlayer.pool === 0) {
+                // Verificar si un jugador ha sido eliminado
                 if (NonActivePlayer.nonActiveRegistry.length === 4) {
                     handleEliminationFiveplayers(otherPlayer);
                 } else if (NonActivePlayer.nonActiveRegistry.length === 3) {
@@ -142,18 +152,17 @@ function prank() {
                     handleEliminationThreePlayers(otherPlayer);
                 } else {
                     actingPlayer.pool += 6;
+                    actingPlayer.previousMod += 6;
                     actingPlayer.victoryPoints += 1;
                     console.log("The Prey has been ousted!\nThe active player has won the game.");
                     NonActivePlayer.nonActiveRegistry = NonActivePlayer.nonActiveRegistry.filter(player => player !== prey);
                 }
-            } else {
-                console.log(`${capitalize(otherPlayer.name)}'s pool is now ${otherPlayer.pool}`);
-                console.log(`Acting player pool is now ${actingPlayer.pool}\n`);
-                index ++;
             }
+
         } else {
             console.log("Wrong guess!");
             otherPlayer.pool += otherPlayer.choice;
+            otherPlayer.previousMod = otherPlayer.choice;
             console.log(`${capitalize(otherPlayer.name)}'s pool is now ${otherPlayer.pool}\n`);
             index ++;
             }

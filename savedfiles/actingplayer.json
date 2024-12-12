@@ -3,7 +3,7 @@
   "pool": 15,
   "previousMod": null,
   "victoryPoints": 0,
-  "guess": null,
+  "guess": 3,
   "previousGuess": null,
   "chosenStrategy": "optimist"
 }

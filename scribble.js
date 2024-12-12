@@ -12,6 +12,9 @@ Hacer que haya más de un save file folder. :)
 
 Ampliar sobre la complejidad de la teoría de juegos y el por qué de tu interés en desarrollar este programa.
 
+Random, y probablemente en el resto de modos también, generan instancias que luego no son eliminadas. 
+Eso causa problemas. Al final del iterador hay que eliminar el NonActiveRegistry y borrar las instancias
+
 
 
 

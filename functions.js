@@ -37,7 +37,7 @@ async function instancingAllPlayersPersonalised(arg = "no-random") {
             }
         }
     } else if (arg === "random") {
-        numberOfPlayers = (2 + random(5)) // A minimum of 2 players, of course
+        numberOfPlayers = (2 + random(4)) // A minimum of 2 players, of course
         console.log(`${numberOfPlayers} players will be playing at the game.`)
     }
 
