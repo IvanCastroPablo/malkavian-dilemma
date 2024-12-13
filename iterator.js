@@ -32,11 +32,13 @@ function handleEliminationFiveplayers(player) {
         playerSubstitutionFivePlayers(grandpredator, crosstable);
     } else if (player === grandpredator) {
         grandprey.pool += 6;
+        grandprey.previousMod +=6;
         grandprey.victoryPoints += 1;
         console.log("The GrandPredator has been ousted! Your Grandprey is now the Cross-Table player.\n")
         playerSubstitutionFivePlayers(grandprey, crosstable);
     } else if (player === predator) {
         grandpredator.pool += 6;
+        grandpredator.previousMod += 6;
         grandpredator.victoryPoints += 1;
         console.log("The Predator has been ousted! Your Grandprey is now the Cross-Table player, and your Grandpredator is your new predator.\n")
         playerSubstitutionFivePlayers(grandpredator, predator, grandprey, crosstable);
@@ -76,6 +78,7 @@ function handleEliminationFourPlayers(player) {
         playerSubstitutionFourPlayers()
     } else if (player === predator) {
         crosstable.pool += 6;
+        crosstable.previousMod +=6;
         crosstable.victoryPoints += 1;
         console.log("The Predator has been ousted! The Cross-Table player is your new Predator.\n");
         playerSubstitutionFourPlayers(crosstable, predator)

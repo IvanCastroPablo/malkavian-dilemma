@@ -16,7 +16,6 @@ const {
 
 
 async function modeOfGame() {
-    eraseInstances()
     console.log(`
           ╔══════════════════════════════════════════════════════════╗
           ║         Pray thee: enter the Malkavian Dilemma,          ║
@@ -25,6 +24,7 @@ async function modeOfGame() {
         `);
     let recur = false;
     while (!recur) {
+        eraseInstances();
         let validInput = false;
         while (!validInput) {
             const answer = await askQuestion(
