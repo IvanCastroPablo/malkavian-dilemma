@@ -126,9 +126,9 @@ async function playerSubstitutionThreePlayers(player){
 function prank() {
     let index = 0;
     while (index < NonActivePlayer.nonActiveRegistry.length){
+        const otherPlayer = NonActivePlayer.nonActiveRegistry[index];
         executingMethods();
         reorderNonActiveRegistry();
-        const otherPlayer = NonActivePlayer.nonActiveRegistry[index];
         console.log(`${capitalize(otherPlayer.name)} has chosen ${otherPlayer.choice}`);
         console.log(`Acting player guess ${actingPlayer.guess}\n`);
         // Lógica principal
