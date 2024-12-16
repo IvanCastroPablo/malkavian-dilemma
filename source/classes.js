@@ -41,19 +41,19 @@ class ActivePlayer {
         activeStrategies._aleatory.call(this);
     }
 
-    /*
+    
     test() {
         activeStrategies._test.call(this);
     }
-    */
+    
 
     // Diccionario de nombres para estrategias activas
     static activeStrategyNames = {
         optimist: 'optimist',
         delusional: 'delusional',
         pessimist: 'pessimist',
-        aleatory: 'aleatory'
-        //test: 'test'
+        aleatory: 'aleatory',
+        test: 'test'
     };
 
     // Mapa de estrategias por índice
@@ -61,14 +61,14 @@ class ActivePlayer {
         1: 'optimist',
         2: 'delusional',
         3: 'pessimist',
-        4: 'aleatory'
-        //5: 'test'
+        4: 'aleatory',
+        5: 'test'
     };
 
     // Función para seleccionar una estrategia del jugador activo
     async selectActiveStrategy() {
         while (true) {
-            const answer = await askQuestion("Select one option among the following strategies for acting player:\n1) Optimist\n2) Delusional\n3) Pessimist\n4) Aleatory\n", [1, 2, 3, 4/*, 5*/]);
+            const answer = await askQuestion("Select one option among the following strategies for acting player:\n1) Optimist\n2) Delusional\n3) Pessimist\n4) Aleatory\n5) Test\n", [1, 2, 3, 4, 5]);
             
             if (answer !== null) {
                 // el nombre de la estrategia desde el mapa
@@ -81,7 +81,7 @@ class ActivePlayer {
         }
     }
     async selectRandomActiveStrategy() {
-        const randomIndex = 1 + random(4) // <--- cámbialo a medida que vayas introduciendo nuevas estrategias
+        const randomIndex = 1 + random(5) // <--- cámbialo a medida que vayas introduciendo nuevas estrategias (coincide con la key más alta de activeStrategyMap)
         const strategyName = ActivePlayer.activeStrategyMap[randomIndex];
         this.chosenStrategy = this[strategyName];  
 

@@ -47,7 +47,7 @@ async function handleMenuSelection() {
                     break;
                 case 5:
                     console.log("Goodbye.");
-                    return false; // Indica al bucle principal que termine
+                    return false; // cortar bucle
                 default:
                     console.log("Please, choose a valid option between 1 and 5.");
                     validInput = false;
@@ -59,7 +59,7 @@ async function handleMenuSelection() {
             console.log("Please, choose a valid option between 1 and 5.");
         }
     }
-    return true; // Continuar con el juego
+    return true; // continuar bucle
 }
 
 module.exports = { handleMenuSelection };

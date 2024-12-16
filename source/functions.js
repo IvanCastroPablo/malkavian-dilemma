@@ -152,7 +152,8 @@ function executingMethods() {
     for (const player of NonActivePlayer.nonActiveRegistry) {
         player.chosenStrategy.call(player)
     }
-    actingPlayer.chosenStrategy.call(actingPlayer)
+    actingPlayer.chosenStrategy.call(actingPlayer);
+    opponent.chosenStrategy.call(opponent);
 }
 
 
@@ -273,7 +274,8 @@ function eraseInstances() {
             globalThis[i] = null;
         }
     }
-
+    // Creo una instancia que será utilizada en prank para hacer los cálculos comparativos
+    global.opponent = new NonActivePlayer({})
     NonActivePlayer.nonActiveRegistry = [];
 }
 

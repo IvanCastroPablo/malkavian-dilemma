@@ -8,7 +8,7 @@
 
 - Web implementation.
 - Testing.
-- Reorganize some functions in `iterator.js` into `functions.js` for clarity.
+- Reorganize some functions in `iterator.js` into `functions.js` for clarity (nope, están bien donde están, me aclaro bien con esa distribución)
 - Add support for multiple save file folders. :)
 
 ---
@@ -36,7 +36,7 @@ Quizá todo esto no sea necesario dada la siguiente línea existente en prank:
 ```javascript
 const opponent = NonActivePlayer.nonActiveRegistry[index];
 ```
-**RESUMEN: SI ES SUFICIENTE**
+**RESUMEN: SI ES NECESARIO**
 
 Vas a tener que refactorizar la lógica de prank y hacer lo que has comentado arriba porque los métodos **no pueden ver el estado de una instancia ajena a su clase a menos que exista previamente**.
 
@@ -55,7 +55,7 @@ if (crossplayer && crossplayer.pool == X && opponent.name === "crossplayer") {
     // logic here
 }
 ```
-
+## *LÓGICA IMPLEMENTADA CON ÉXITO!! AHORA SOLAMENTE NECESITO DESARROLLAR NUEVAS ESTRATEGIAS :D 
 
 ---
 
