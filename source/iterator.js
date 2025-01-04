@@ -174,6 +174,7 @@ function prank() {
             opponent.pool += opponent.choice;
             opponent.previousMod = opponent.choice;
             console.log(`${capitalize(opponent.name)}'s pool is now ${opponent.pool}\n`);
+            Object.assign(turntaker, opponent);
             index ++;
             }
     }

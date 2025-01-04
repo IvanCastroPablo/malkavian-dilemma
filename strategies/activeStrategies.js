@@ -19,10 +19,26 @@ function _aleatory() {
 }
 
 function _test() {
-    if (global.opponent.pool < 15) {
-        this.guess = 6
+    if (opponent.name == "Crosstable" && opponent.pool <= 4) {
+        this.guess = 1;
+    } else if (opponent.name == "Crosstable" && opponent.pool > 4) {
+        this.guess = (1 + random(4));
+    } else if (opponent.name == "Prey" && opponent.pool > 4){
+        this.guess = 4;
+    } else if (opponent.name == "Prey" && (opponent.pool >= 2 && opponent.pool <= 4) && NonActivePlayer.nonActiveRegistry.length == 3 && crosstable.pool <= 7) {
+        this.guess = (1 + random(3));
+    } else if (opponent.name == "Prey" && (opponent.pool >= 2 && opponent.pool <= 4) && NonActivePlayer.nonActiveRegistry.length == 2 && opponent.pool <= 7){
+        this.guess = (1 + random(3));
+    } else if (opponent.name == "Grandprey" && opponent.pool <= 4) {
+        this.guess = 1;
+    } else if (opponent.name == "Grandprey" && opponent.pool > 4) {
+        this.guess = (1 + random(4));
+    } else if (opponent.name == "Predator" && opponent.pool <= 4) {
+        this.guess = 1;
+    } else if (opponent.name == "Predator" && opponent.pool > 4) {
+        this.guess = (1 + random(4));
     } else {
-        this.guess = 10
+        this.guess = (3 + random(2));
     }
 }
 

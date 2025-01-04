@@ -1,9 +1,9 @@
 {
   "name": "Prey",
   "pool": 16,
-  "previousMod": 1,
+  "previousMod": 3,
   "victoryPoints": 0,
-  "choice": 2,
+  "choice": 4,
   "previousChoice": null,
-  "chosenStrategy": "conservative"
+  "chosenStrategy": "aggressive"
 }

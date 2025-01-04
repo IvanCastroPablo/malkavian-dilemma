@@ -111,7 +111,7 @@ class NonActivePlayer {
         this.previousChoice = previousChoice;
         this.chosenStrategy = chosenStrategy;
         
-        NonActivePlayer.nonActiveRegistry.push(this);
+        // Expresión para añadir los NonActive en cada instanciación: NonActivePlayer.nonActiveRegistry.push(this);
     }
 
     conservative() {
@@ -130,12 +130,17 @@ class NonActivePlayer {
         nonActiveStrategies._randomChoice.call(this);
     }
 
+    nonactivetest() {
+        nonActiveStrategies._nonactivetest.call(this);
+    }
+
     // Diccionario de nombres para estrategias no activas
     static nonActiveStrategyNames = {
         conservative: "Conservative",
         aggressive: "Aggressive",
         clever: "Clever",
-        randomChoice: "Random Choice"
+        randomChoice: "Random Choice",
+        nonactivetest: "nonactivetest"
     }
 
     // Mapa de estrategias por índice
@@ -143,14 +148,15 @@ class NonActivePlayer {
         1: 'conservative',
         2: 'aggressive',
         3: 'clever',
-        4: 'randomChoice'
+        4: 'randomChoice',
+        5: 'nonactivetest'
     }
 
     // Función para seleccionar la estrategia de un jugador no activo dado
     async selectNonActiveStrategy() {
         while (true) {
             let answer = await askQuestion(
-                `Select one option among the following strategies for ${this.name}:\n1) Conservative\n2) Aggressive\n3) Clever\n4) Random Choice\n`, [1, 2, 3, 4]);
+                `Select one option among the following strategies for ${this.name}:\n1) Conservative\n2) Aggressive\n3) Clever\n4) Random Choice\n5) Non Active test\n`, [1, 2, 3, 4, 5]);
 
             if (answer !== null) {
                 const strategyName = NonActivePlayer.nonActiveStrategyMap[answer];
@@ -164,7 +170,7 @@ class NonActivePlayer {
 
     // Método para seleccionar una estrategia de forma aleatoria para un jugador no activo
     async selectRandomNonActiveStrategy() {
-        const randomIndex = (1 + random(4)); // Seleccionar un índice aleatorio
+        const randomIndex = (1 + random(5)); // Seleccionar un índice aleatorio
         const strategyName = NonActivePlayer.nonActiveStrategyMap[randomIndex];
         this.chosenStrategy = this[strategyName];  // Asignamos la función de la estrategia correspondiente
 

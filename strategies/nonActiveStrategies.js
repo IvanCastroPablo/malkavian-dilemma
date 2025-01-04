@@ -32,10 +32,14 @@ function _randomChoice() {
     this.choice = (1 + random(4));
 }
 
+function _nonactivetest() {
+    this.choice = 777;
+}
 
 module.exports = {
     _conservative,
     _aggressive,
     _clever,
-    _randomChoice    
+    _randomChoice,
+    _nonactivetest 
 }

@@ -1,9 +1,9 @@
 {
   "name": "Grandprey",
-  "pool": 16,
-  "previousMod": 1,
+  "pool": 25,
+  "previousMod": 4,
   "victoryPoints": 0,
-  "choice": 2,
+  "choice": 4,
   "previousChoice": null,
-  "chosenStrategy": "conservative"
+  "chosenStrategy": "aggressive"
 }

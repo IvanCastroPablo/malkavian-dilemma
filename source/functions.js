@@ -11,18 +11,22 @@ const {
 const fs = require('fs');
 const path = require('path');
 
-// chorrada por si la necesito
+// minifunción para capitalizar palabras
 function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 // Función estándar para instanciar a todos los jugadores y a 15 de pool
 function instancingAllPlayersRegular() {
-    global.actingPlayer = new ActivePlayer({name: "Acting player"});
     global.prey = new NonActivePlayer({name: "Prey"});
     global.grandprey = new NonActivePlayer({name: "Grandprey"});
     global.grandpredator = new NonActivePlayer({name: "Grandpredator"});
     global.predator = new NonActivePlayer({name: "Predator"});
+    global.crosstable = new NonActivePlayer({name: "Crosstable"});
+    NonActivePlayer.nonActiveRegistry.push(prey);
+    NonActivePlayer.nonActiveRegistry.push(grandprey);
+    NonActivePlayer.nonActiveRegistry.push(grandpredator);
+    NonActivePlayer.nonActiveRegistry.push(predator);
 }
 
 // función para instanciar a los jugadores de forma personalizada (num de jugadores) y random
@@ -41,19 +45,18 @@ async function instancingAllPlayersPersonalised(arg = "no-random") {
         console.log(`${numberOfPlayers} players will be playing at the game.`)
     }
 
+    global.actingPlayer = new ActivePlayer({name: "acting player"});
     if (numberOfPlayers === 2) {
-        global.actingPlayer = new ActivePlayer({name: "acting player"});
-        global.prey = new NonActivePlayer({name: "prey"});   
+        instancingAllPlayersRegular();
+        NonActivePlayer.nonActiveRegistry = NonActivePlayer.nonActiveRegistry.filter(item => item == prey);
     }
     else if (numberOfPlayers === 3) {
-        global.actingPlayer = new ActivePlayer({name: "acting player"});
-        global.prey = new NonActivePlayer({name: "prey"});
-        global.predator = new NonActivePlayer({name: "predator"});
+        instancingAllPlayersRegular();
+        NonActivePlayer.nonActiveRegistry = NonActivePlayer.nonActiveRegistry.filter(item => item == prey || item == predator);
     } else if (numberOfPlayers === 4) {
-        global.actingPlayer = new ActivePlayer({name: "acting player"});
-        global.prey = new NonActivePlayer({name: "prey"});
-        global.crosstable = new NonActivePlayer({name: "crosstable"});
-        global.predator = new NonActivePlayer({name: "predator"});
+        instancingAllPlayersRegular();
+        NonActivePlayer.nonActiveRegistry = NonActivePlayer.nonActiveRegistry.filter(item => item == prey || item == predator);
+        NonActivePlayer.nonActiveRegistry.push(crosstable);
     } else if (numberOfPlayers === 5) {
         instancingAllPlayersRegular()
     }
@@ -201,6 +204,7 @@ function instancingPlayersFromFiles() {
                 if (strategyName) {
                     global[instanceName].chosenStrategy = NonActivePlayer.prototype[strategyName]
                 }
+                NonActivePlayer.nonActiveRegistry.push(player);
             }
         }
     });

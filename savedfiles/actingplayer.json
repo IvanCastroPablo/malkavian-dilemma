@@ -1,6 +1,6 @@
 {
-  "name": "Acting player",
-  "pool": 15,
+  "name": "acting player",
+  "pool": 16,
   "previousMod": null,
   "victoryPoints": 0,
   "guess": 3,

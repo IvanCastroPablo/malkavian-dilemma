@@ -8,6 +8,8 @@ const {
     eraseInstances
 } = require("./functions.js");
 
+const { ActivePlayer } = require("./classes.js");
+
 const { roundsOfPlay } = require("./iterator.js");
 const { askQuestion } = require('./utils.js');
 
@@ -24,6 +26,7 @@ async function handleMenuSelection() {
             validInput = true;
             switch (option) {
                 case 1:
+                    global.actingPlayer = new ActivePlayer({name: "Acting player"});
                     instancingAllPlayersRegular();
                     await manageStrategies();
                     await roundsOfPlay();
