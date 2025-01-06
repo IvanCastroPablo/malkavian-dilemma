@@ -1,0 +1,9 @@
+{
+  "name": "Prey",
+  "pool": 9,
+  "previousMod": 1,
+  "victoryPoints": 0,
+  "choice": 1,
+  "previousChoice": 1,
+  "chosenStrategy": "conservative"
+}

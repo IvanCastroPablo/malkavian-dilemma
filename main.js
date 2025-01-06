@@ -1,6 +1,7 @@
 const { handleMenuSelection } = require("./source/menuselection.js");
 
 async function modeOfGame() {
+    global.registeredUser = false;
     console.log(`
           ╔══════════════════════════════════════════════════════════╗
           ║         Pray thee: enter the Malkavian Dilemma,          ║

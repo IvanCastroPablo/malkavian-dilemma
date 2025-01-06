@@ -5,7 +5,8 @@ const {
 
 const {
     askQuestion,
-    random
+    random,
+    time
 } = require('./utils.js')
 
 const fs = require('fs');
@@ -175,7 +176,11 @@ function reorderNonActiveRegistry() {
 }
 
 // Función para instanciar jugadores desde los archivos .json
-function instancingPlayersFromFiles() {
+async function instancingPlayersFromFiles(gameDir = false) {
+
+    if (gameDir === false) {
+        const userDir = await handleUserDirectory("loading");
+    }
     const playersData = [
         { file: 'actingplayer.json', class: ActivePlayer},
         { file: 'prey.json', class: NonActivePlayer},
@@ -186,18 +191,16 @@ function instancingPlayersFromFiles() {
     ];
 
     playersData.forEach(({ file, class: playerClass }) => {
-        const filePath = path.join(__dirname, '../savedfiles', file);
+        const filePath = path.join(userDir, file);
         if (fs.existsSync(filePath)) {
             const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
             const instanceName = path.basename(file, '.json');
-            if (playerClass === ActivePlayer) {
 
+            if (playerClass === ActivePlayer) {
                 global.actingPlayer = new ActivePlayer(data);
                 const strategyName = data.chosenStrategy;
                 actingPlayer.chosenStrategy = ActivePlayer.prototype[strategyName]
-
             } else if (playerClass === NonActivePlayer) {
-
                 const player = new NonActivePlayer(data);
                 global[instanceName] = player;
                 const strategyName = data.chosenStrategy;
@@ -208,33 +211,114 @@ function instancingPlayersFromFiles() {
             }
         }
     });
+    console.log("Players initialised succesfully.")
+}
+
+// para preguntar por un nombre de archivo, que pasa a string sin espacios y con fecha
+async function fileName() {
+    let answer = await askQuestion('Provide a name for the file you wish to save:\n', [], "str");
+    let completeFileName = `${answer}_${time()}`
+    return completeFileName;
+}
+
+// para hacer lo mismo pero para username
+async function getUserName() {
+    let answer = await askQuestion('Provide an username to create a profile or to show the existent one:\n', [], "str");
+    let completeUsername = answer.replace(/\//g, '-');
+    //hacer que el programa vea el usuario como registrado
+    registeredUser = true;
+    return completeUsername;
+}
+
+//funcion para listar las partidas de una carpeta
+function listingGames(userDir, userName) {
+    console.log(`Here are the available games for ${userName}:\n`);
+    gameDirs = fs.readdirSync(userDir)
+        .map(dirName => path.join(userDir, dirName))
+        .filter(filePath => fs.lstatSync(filePath).isDirectory())
+        .sort((a, b) => {
+            const aStat = fs.statSync(a).mtime;
+            const bStat = fs.statSync(b).mtime;
+            return bStat - aStat; // Ordenar por fecha
+    });
+        
+    gameDirs.forEach((dir, index) => {
+    console.log(`${index +1}) ${path.basename(dir)}`);
+    });
+    if (gameDirs.length > 0) {
+        return gameDirs.length;
+    } else {return false}
+}
+
+// para acceder a los directorios de los usuarios o crearlos si no existen
+async function handleUserDirectory(mode = "saving") {
+    if (registeredUser === false) {
+        const userName = await getUserName();
+        registeredUser = true;
+        userDir = path.join(__dirname, '../savedfiles', userName);
+        // existe la carpeta de usuario?
+        if (!fs.existsSync(userDir)) {
+            console.log('Creating a new user profile...\n');
+            fs.mkdirSync(userDir, { recursive: true});
+            console.log(`Profile for ${userName} created succesfully.\n`);
+            
+        };
+        let nonEmty = listingGames(userDir, userName);
+        console.log("\nChoose one by it's associated number.")
+
+        if (mode == "loading" && nonEmty) {
+            let chosenIndex = null;
+            while (chosenIndex === null) {
+                const input = await askQuestion('Select a game to load by number (or type 0 to cancel):\n');
+                const index = parseInt(input);
+                if (!isNaN(index) && index <= nonEmty) {
+                    if (index === 0) {
+                        console.log("Loading cancelled.");
+                        return null;
+                    }
+                    chosenIndex = index - 1;
+                } else {
+                    console.log("Invalid selection. Please try again.")
+                }
+            }
+
+            //usar el index para obtener el directorio seleccionado
+            gameDir = path.join(userDir, gameDirs[chosenIndex]);
+            console.log(`Loading game from ${path.basename(gameDir)}\n`);
+            return gameDir;
+        }
+    };
+    return userDir;
 }
 
 // Función para guardar a los jugadores si el usuario lo desea
-async function savePlayersToFile() {
+async function savePlayersToFile(gameDirs) {
     let answer = null;
     while (answer === null) {
         answer = await askQuestion('Would you like to save the state of the game?\n1) Yes\n2) No\n', [1, 2]);
     }
-
     if (answer === 1) {
+        // Eliminar la partida más antigua si hay más de 10
+        if (gameDirs.length >= 10) {
+            const oldestDir = gameDirs.pop();
+            fs.rmSync(oldestDir, { recursive: true, force: true });
+            console.log(`Deleted the oldest game save: ${path.basename(oldestDir)}\n`);
+        } 
 
-        const saveDir = path.join(__dirname, '../savedfiles');
-
-        // Vaciado de carpeta
-        if (fs.existsSync(saveDir)) {
-            const files = fs.readdirSync(saveDir);
-            files.forEach(file => {
-                const filePath = path.join(saveDir, file);
-                if (fs.lstatSync(filePath).isFile()) {
-                    fs.unlinkSync(filePath);
-                }
-            });
-            console.log('Previous saved files deleted.\n');
+        //crear la dirección correcta
+        if (registeredUser === true) {
+            userDir = pathing;
         } else {
-            fs.mkdirSync(saveDir);
+            await handleUserDirectory();
         }
 
+        const gameFolderName = await fileName();
+        const newGameDir = path.join(userDir, gameFolderName);
+        fs.mkdirSync(newGameDir, { recursive: true });
+
+        console.log(`Saving game to: ${gameFolderName} ...\n`);
+
+        //Guardar los datos del jugador activo
         const actingPlayerData = {
             name: actingPlayer.name,
             pool: actingPlayer.pool,
@@ -242,16 +326,14 @@ async function savePlayersToFile() {
             victoryPoints: actingPlayer.victoryPoints,
             guess: actingPlayer.guess,
             previousGuess: actingPlayer.previousGuess,
-            // guardar solo el nombre de la estrategia en lugar de la función completa!!
-            chosenStrategy: actingPlayer.chosenStrategy.name
+            chosenStrategy: actingPlayer.chosenStrategy.name // Sólo el nombre de la función!
         };
-        const actingPlayerFilePath = path.join(__dirname, '../savedfiles', 'actingplayer.json');
+        const actingPlayerFilePath = path.join(newGameDir, 'actingplayer.json');
         fs.writeFileSync(actingPlayerFilePath, JSON.stringify(actingPlayerData, null, 2), 'utf8');
-        console.log(`Saved Acting Player to a savefile succesfully.`);
+        console.log(`Saved Acting Player to ${gameFolderName}.`);
 
         // Guardar las instancias de NonActivePlayer en el nonActiveRegistry
         NonActivePlayer.nonActiveRegistry.forEach(player => {
-            const filePath = path.join(__dirname, '../savedfiles', `${player.name.toLowerCase()}.json`);
             const playerData = {
                 name: player.name,
                 pool: player.pool,
@@ -259,15 +341,17 @@ async function savePlayersToFile() {
                 victoryPoints: player.victoryPoints,
                 choice: player.choice,
                 previousChoice: player.previousChoice,
-                // lo mismo, guardamos la estrategia solita
                 chosenStrategy: player.chosenStrategy.name
             };
-
-            fs.writeFileSync(filePath, JSON.stringify(playerData, null, 2), 'utf8');
-            console.log(`Saved ${capitalize(player.name)} to a savefile succesfully.`);
+            
+            const NonActivePlayerFilePath = path.join(newGameDir, `${player.name.toLowerCase()}.json`);
+            fs.writeFileSync(NonActivePlayerFilePath, JSON.stringify(playerData, null, 2), 'utf8');
+            console.log(`Saved ${capitalize(player.name)} to ${gameFolderName}`);
 
         });
-    } 
+        
+        console.log(`Game saved successfully in ${path.basename(gameFolderName)}`);
+    }
 }
 
 function eraseInstances() {
@@ -297,6 +381,7 @@ module.exports = {
     savePlayersToFile,
     capitalize,
     aleatoryPlayersInitializing,
-    eraseInstances
+    eraseInstances,
+    handleUserDirectory
 }
 

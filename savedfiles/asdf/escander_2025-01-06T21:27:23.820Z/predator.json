@@ -1,0 +1,9 @@
+{
+  "name": "Predator",
+  "pool": 1570,
+  "previousMod": 777,
+  "victoryPoints": 0,
+  "choice": 777,
+  "previousChoice": 777,
+  "chosenStrategy": "nonactivetest"
+}

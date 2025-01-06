@@ -4,7 +4,7 @@ function random(max) {
 }
 
 // Readline para todas las interacciones.
-function askQuestion(query, validOptions = []) {
+function askQuestion(query, validOptions = [], validate = null) {
     return new Promise((resolve) => {
         const readline = require("readline");
         const rl = readline.createInterface({
@@ -14,20 +14,30 @@ function askQuestion(query, validOptions = []) {
     
         rl.question(query, (answer) => {
             rl.close();
-            const parsedAnswer = parseInt(answer);
-            if (isNaN(parsedAnswer) || (validOptions.length > 0 && !validOptions.includes(parsedAnswer))) {
-                console.log(`Invalid option!`);
-                resolve(null);  // Return null for invalid input
-            } else {
-                resolve(parsedAnswer);  // Return the valid number
+            if (validate == "str") {
+                resolve(answer.replace(/\s+/g, '').toLocaleLowerCase());
+            }
+            else {
+                const parsedAnswer = parseInt(answer);
+                if (isNaN(parsedAnswer) || (validOptions.length > 0 && !validOptions.includes(parsedAnswer))) {
+                    console.log(`Invalid option!`);
+                    resolve(null);  // Return null for invalid input
+                } else {
+                    resolve(parsedAnswer);  // Return the valid number
+                }
             }
         });
     });
 }
 
-
-module.exports = {
-    random, 
-    askQuestion
+//minifunción para obtener fecha
+function time() {
+    const now = new Date().toISOString();
+    return now;
 }
 
+module.exports = {
+    random,
+    askQuestion,
+    time
+}

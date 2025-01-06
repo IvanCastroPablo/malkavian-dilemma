@@ -6,8 +6,17 @@
   "scripts": {
     "test": "echo \"Testing has been done manually using the console for now. Formal tests to be added soon.\" && exit 0"
   },
-  "keywords": ["game", "multiplayer", "solver", "framework", "gametheory"],
+  "keywords": [
+    "game",
+    "multiplayer",
+    "solver",
+    "framework",
+    "gametheory"
+  ],
   "author": "Ivan Castro",
   "license": "CC BY-NC-ND 4.0",
-  "type": "commonjs"
+  "type": "commonjs",
+  "dependencies": {
+    "sqlite3": "^5.1.7"
+  }
 }
