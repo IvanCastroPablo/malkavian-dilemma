@@ -143,6 +143,8 @@ function prank() {
                 opponent.pool -= opponent.choice;
                 actingPlayer.previousMod = opponent.choice;
                 opponent.previousMod = opponent.choice;
+                actingPlayer.previousGuess = actingPlayer.guess;
+                opponent.previousChoice = opponent.choice;
                 console.log(`${capitalize(opponent.name)}'s pool is now ${opponent.pool}`);
                 console.log(`Acting player pool is now ${actingPlayer.pool}\n`);
                 // devuelvo los valores al jugador pertinente una vez hechos los cálculos
@@ -151,9 +153,10 @@ function prank() {
             } else {
                 actingPlayer.pool += opponent.pool;
                 actingPlayer.previousMod = opponent.pool;
+                actingPlayer.previousGuess = actingPlayer.guess;
                 opponent.pool = 0;
                 Object.assign(turntaker, opponent);
-                // Verificar si un jugador ha sido eliminado
+                // Verificar cual de los jugadores ha sido eliminado
                 if (NonActivePlayer.nonActiveRegistry.length === 4) {
                     handleEliminationFiveplayers(opponent.name);
                 } else if (NonActivePlayer.nonActiveRegistry.length === 3) {
@@ -164,6 +167,7 @@ function prank() {
                     actingPlayer.pool += 6;
                     actingPlayer.previousMod += 6;
                     actingPlayer.victoryPoints += 1;
+                    actingPlayer.previousGuess = actingPlayer.guess;
                     console.log("The Prey has been ousted!\nThe active player has won the game.");
                     NonActivePlayer.nonActiveRegistry = NonActivePlayer.nonActiveRegistry.filter(player => player !== prey);
                 }
@@ -173,6 +177,8 @@ function prank() {
             console.log("Wrong guess!");
             opponent.pool += opponent.choice;
             opponent.previousMod = opponent.choice;
+            opponent.previousChoice = opponent.choice;
+            actingPlayer.previousGuess = actingPlayer.guess;
             console.log(`${capitalize(opponent.name)}'s pool is now ${opponent.pool}\n`);
             Object.assign(turntaker, opponent);
             index ++;
