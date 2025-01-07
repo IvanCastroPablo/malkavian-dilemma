@@ -1,0 +1,9 @@
+{
+  "name": "acting player",
+  "pool": 24,
+  "previousMod": 2,
+  "victoryPoints": 0,
+  "guess": 2,
+  "previousGuess": 2,
+  "chosenStrategy": "pessimist"
+}
