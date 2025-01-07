@@ -176,11 +176,10 @@ function reorderNonActiveRegistry() {
 }
 
 // Función para instanciar jugadores desde los archivos .json
-async function instancingPlayersFromFiles(gameDir = false) {
-
-    if (gameDir === false) {
-        const userDir = await handleUserDirectory("loading");
-    }
+async function instancingPlayersFromFiles() {
+    console.log("test 1")
+    gameDir = await handleUserDirectory("loading");
+    console.log("test 2")
     const playersData = [
         { file: 'actingplayer.json', class: ActivePlayer},
         { file: 'prey.json', class: NonActivePlayer},
@@ -189,29 +188,38 @@ async function instancingPlayersFromFiles(gameDir = false) {
         { file: 'predator.json', class: NonActivePlayer},
         { file: 'crosstable.json', class: NonActivePlayer}
     ];
+    if (gameDir){
+        console.log("test 3")
+        playersData.forEach(({ file, class: playerClass }) => {
+            console.log("test 4")
+            const filePath = path.join(gameDir, file);
+            console.log("test 5")
+            console.log(gameDir)
+            if (fs.existsSync(filePath)) {
+                console.log("test 6")
+                const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+                console.log("test 7")
+                const instanceName = path.basename(file, '.json');
+                console.log("test 8")
 
-    playersData.forEach(({ file, class: playerClass }) => {
-        const filePath = path.join(userDir, file);
-        if (fs.existsSync(filePath)) {
-            const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-            const instanceName = path.basename(file, '.json');
-
-            if (playerClass === ActivePlayer) {
-                global.actingPlayer = new ActivePlayer(data);
-                const strategyName = data.chosenStrategy;
-                actingPlayer.chosenStrategy = ActivePlayer.prototype[strategyName]
-            } else if (playerClass === NonActivePlayer) {
-                const player = new NonActivePlayer(data);
-                global[instanceName] = player;
-                const strategyName = data.chosenStrategy;
-                if (strategyName) {
-                    global[instanceName].chosenStrategy = NonActivePlayer.prototype[strategyName]
+                if (playerClass === ActivePlayer) {
+                    global.actingPlayer = new ActivePlayer(data);
+                    const strategyName = data.chosenStrategy;
+                    actingPlayer.chosenStrategy = ActivePlayer.prototype[strategyName]
+                } else if (playerClass === NonActivePlayer) {
+                    const player = new NonActivePlayer(data);
+                    global[instanceName] = player;
+                    const strategyName = data.chosenStrategy;
+                    if (strategyName) {
+                        global[instanceName].chosenStrategy = NonActivePlayer.prototype[strategyName]
+                    }
+                    NonActivePlayer.nonActiveRegistry.push(player);
                 }
-                NonActivePlayer.nonActiveRegistry.push(player);
             }
-        }
-    });
-    console.log("Players initialised succesfully.")
+        });
+        console.log("Players initialised succesfully.")
+    }
+    gameDir = false;
 }
 
 // para preguntar por un nombre de archivo, que pasa a string sin espacios y con fecha
@@ -225,8 +233,7 @@ async function fileName() {
 async function getUserName() {
     let answer = await askQuestion('Provide an username to create a profile or to show the existent one:\n', [], "str");
     let completeUsername = answer.replace(/\//g, '-');
-    //hacer que el programa vea el usuario como registrado
-    registeredUser = true;
+
     return completeUsername;
 }
 
@@ -254,19 +261,20 @@ function listingGames(userDir, userName) {
 async function handleUserDirectory(mode = "saving") {
     if (registeredUser === false) {
         const userName = await getUserName();
-        registeredUser = true;
         userDir = path.join(__dirname, '../savedfiles', userName);
-        // existe la carpeta de usuario?
+        // si no existe la carpeta de usuario
         if (!fs.existsSync(userDir)) {
             console.log('Creating a new user profile...\n');
             fs.mkdirSync(userDir, { recursive: true});
             console.log(`Profile for ${userName} created succesfully.\n`);
-            
+        } else { 
+            registeredUser = userDir;
         };
-        let nonEmty = listingGames(userDir, userName);
-        console.log("\nChoose one by it's associated number.")
-
+    } else {
+        console.log("prueba handler 1")
+        let nonEmty = listingGames(userDir, userName); // <--- y de donde te sacas el userName? xD
         if (mode == "loading" && nonEmty) {
+            console.log("prueba handler 2")
             let chosenIndex = null;
             while (chosenIndex === null) {
                 const input = await askQuestion('Select a game to load by number (or type 0 to cancel):\n');
@@ -283,11 +291,13 @@ async function handleUserDirectory(mode = "saving") {
             }
 
             //usar el index para obtener el directorio seleccionado
-            gameDir = path.join(userDir, gameDirs[chosenIndex]);
+            console.log("prueba handler 3")
+            gameDir = path.join(gameDirs[chosenIndex]);
+            console.log("prueba handler 4")
             console.log(`Loading game from ${path.basename(gameDir)}\n`);
             return gameDir;
         }
-    };
+    }
     return userDir;
 }
 
@@ -300,14 +310,15 @@ async function savePlayersToFile(gameDirs) {
     if (answer === 1) {
         // Eliminar la partida más antigua si hay más de 10
         if (gameDirs.length >= 10) {
-            const oldestDir = gameDirs.pop();
+            gameDirs.sort((a, b) => fs.statSync(a).birthtime - fs.statSync(b).birthtime);
+            const oldestDir = gameDirs[0];
             fs.rmSync(oldestDir, { recursive: true, force: true });
             console.log(`Deleted the oldest game save: ${path.basename(oldestDir)}\n`);
         } 
 
         //crear la dirección correcta
-        if (registeredUser === true) {
-            userDir = pathing;
+        if (registeredUser) {
+            userDir = registeredUser;
         } else {
             await handleUserDirectory();
         }
@@ -351,6 +362,7 @@ async function savePlayersToFile(gameDirs) {
         });
         
         console.log(`Game saved successfully in ${path.basename(gameFolderName)}`);
+        gameDirs = [];
     }
 }
 

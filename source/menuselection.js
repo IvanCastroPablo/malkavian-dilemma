@@ -14,11 +14,11 @@ const { roundsOfPlay } = require("./iterator.js");
 const { askQuestion } = require('./utils.js');
 
 async function handleMenuSelection() {
-    eraseInstances(); // Limpia las instancias antes de cada partida
     let validInput = false;
     let players = true;
     let gameDirs = [];
     while (!validInput) {
+        eraseInstances(); // Limpia las instancias antes de cada partida
         const answer = await askQuestion(
             "\nDo you prefer a standard mode of game, a personalised, a total random one, or to load a saved game?\n1) Standard\n2) Personalised\n3) Random\n4) Saved Game\n5) Exit\n"
         );
