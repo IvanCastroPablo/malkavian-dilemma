@@ -42,7 +42,7 @@ async function handleMenuSelection() {
                     break;
                 case 4:
                     await instancingPlayersFromFiles();
-                    if (typeof actingPlayer === "undefined") {
+                    if (typeof actingPlayer == "undefined") {
                         console.log("No save files detected.");
                         players = false;
                     } else {

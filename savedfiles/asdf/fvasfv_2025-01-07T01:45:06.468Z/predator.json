@@ -1,9 +1,0 @@
-{
-  "name": "Predator",
-  "pool": 8,
-  "previousMod": 2,
-  "victoryPoints": 0,
-  "choice": 2,
-  "previousChoice": 2,
-  "chosenStrategy": "clever"
-}

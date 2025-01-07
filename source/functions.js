@@ -180,6 +180,7 @@ async function instancingPlayersFromFiles() {
     console.log("test 1")
     gameDir = await handleUserDirectory("loading");
     console.log("test 2")
+    console.log("Hueco para gameDir")
     const playersData = [
         { file: 'actingplayer.json', class: ActivePlayer},
         { file: 'prey.json', class: NonActivePlayer},
@@ -260,43 +261,43 @@ function listingGames(userDir, userName) {
 // para acceder a los directorios de los usuarios o crearlos si no existen
 async function handleUserDirectory(mode = "saving") {
     if (registeredUser === false) {
-        const userName = await getUserName();
+        userName = await getUserName();
         userDir = path.join(__dirname, '../savedfiles', userName);
         // si no existe la carpeta de usuario
         if (!fs.existsSync(userDir)) {
             console.log('Creating a new user profile...\n');
             fs.mkdirSync(userDir, { recursive: true});
             console.log(`Profile for ${userName} created succesfully.\n`);
+            registeredUser = userDir;
         } else { 
             registeredUser = userDir;
         };
-    } else {
-        console.log("prueba handler 1")
-        let nonEmty = listingGames(userDir, userName); // <--- y de donde te sacas el userName? xD
-        if (mode == "loading" && nonEmty) {
-            console.log("prueba handler 2")
-            let chosenIndex = null;
-            while (chosenIndex === null) {
-                const input = await askQuestion('Select a game to load by number (or type 0 to cancel):\n');
-                const index = parseInt(input);
-                if (!isNaN(index) && index <= nonEmty) {
-                    if (index === 0) {
-                        console.log("Loading cancelled.");
-                        return null;
-                    }
-                    chosenIndex = index - 1;
-                } else {
-                    console.log("Invalid selection. Please try again.")
+    }
+    console.log("prueba handler 1")
+    let nonEmty = listingGames(userDir, userName); // <--- y de donde te sacas el userName? xD
+    if (mode == "loading" && nonEmty) {
+        console.log("prueba handler 2")
+        let chosenIndex = null;
+        while (chosenIndex === null) {
+            const input = await askQuestion('Select a game to load by number (or type 0 to cancel):\n');
+            const index = parseInt(input);
+            if (!isNaN(index) && index <= nonEmty) {
+                if (index === 0) {
+                    console.log("Loading cancelled.");
+                    return null;
                 }
+                chosenIndex = index - 1;
+            } else {
+                console.log("Invalid selection. Please try again.")
             }
-
-            //usar el index para obtener el directorio seleccionado
-            console.log("prueba handler 3")
-            gameDir = path.join(gameDirs[chosenIndex]);
-            console.log("prueba handler 4")
-            console.log(`Loading game from ${path.basename(gameDir)}\n`);
-            return gameDir;
         }
+
+        //usar el index para obtener el directorio seleccionado
+        console.log("prueba handler 3")
+        gameDir = path.join(gameDirs[chosenIndex]);
+        console.log("prueba handler 4")
+        console.log(`Loading game from ${path.basename(gameDir)}\n`);
+        return gameDir;
     }
     return userDir;
 }

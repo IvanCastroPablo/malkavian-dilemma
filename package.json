@@ -4,6 +4,7 @@
   "description": "A JavaScript solver framework for multiplayer scenarios",
   "main": "main.js",
   "scripts": {
+    "start": "node main.js",
     "test": "echo \"Testing has been done manually using the console for now. Formal tests to be added soon.\" && exit 0"
   },
   "keywords": [
