@@ -177,10 +177,7 @@ function reorderNonActiveRegistry() {
 
 // Función para instanciar jugadores desde los archivos .json
 async function instancingPlayersFromFiles() {
-    console.log("test 1")
     gameDir = await handleUserDirectory("loading");
-    console.log("test 2")
-    console.log("Hueco para gameDir")
     const playersData = [
         { file: 'actingplayer.json', class: ActivePlayer},
         { file: 'prey.json', class: NonActivePlayer},
@@ -190,19 +187,11 @@ async function instancingPlayersFromFiles() {
         { file: 'crosstable.json', class: NonActivePlayer}
     ];
     if (gameDir){
-        console.log("test 3")
         playersData.forEach(({ file, class: playerClass }) => {
-            console.log("test 4")
             const filePath = path.join(gameDir, file);
-            console.log("test 5")
-            console.log(gameDir)
             if (fs.existsSync(filePath)) {
-                console.log("test 6")
                 const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-                console.log("test 7")
                 const instanceName = path.basename(file, '.json');
-                console.log("test 8")
-
                 if (playerClass === ActivePlayer) {
                     global.actingPlayer = new ActivePlayer(data);
                     const strategyName = data.chosenStrategy;
@@ -273,10 +262,8 @@ async function handleUserDirectory(mode = "saving") {
             registeredUser = userDir;
         };
     }
-    console.log("prueba handler 1")
     let nonEmty = listingGames(userDir, userName); // <--- y de donde te sacas el userName? xD
     if (mode == "loading" && nonEmty) {
-        console.log("prueba handler 2")
         let chosenIndex = null;
         while (chosenIndex === null) {
             const input = await askQuestion('Select a game to load by number (or type 0 to cancel):\n');
@@ -291,11 +278,8 @@ async function handleUserDirectory(mode = "saving") {
                 console.log("Invalid selection. Please try again.")
             }
         }
-
         //usar el index para obtener el directorio seleccionado
-        console.log("prueba handler 3")
         gameDir = path.join(gameDirs[chosenIndex]);
-        console.log("prueba handler 4")
         console.log(`Loading game from ${path.basename(gameDir)}\n`);
         return gameDir;
     }
