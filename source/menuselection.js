@@ -20,7 +20,7 @@ async function handleMenuSelection() {
     while (!validInput) {
         eraseInstances(); // Limpia las instancias antes de cada partida
         const answer = await askQuestion(
-            "\nDo you prefer a standard mode of game, a personalised, a total random one, or to load a saved game?\n1) Standard\n2) Personalised\n3) Random\n4) Saved Game\n5) Exit\n"
+            "\nDo you prefer a standard mode of game, a personalised, a total random one, or to load a saved game?\n1) Standard\n2) Personalised\n3) Random\n4) Saved Game\n5) Log off\n6) Exit\n"
         );
         if (!isNaN(answer)) {
             const option = parseInt(answer);
@@ -50,6 +50,12 @@ async function handleMenuSelection() {
                     }
                     break;
                 case 5:
+                    if (global.registeredUser) {
+                        console.log(`introducir el nombre de usuario y decir que se deslogea exitosamente. Hazlo a través de su path`) // <--- cambia esto
+                        global.registeredUser = false;
+                        
+                    }
+                case 6:
                     console.log("Goodbye.");
                     return false; // cortar bucle
                 default:
